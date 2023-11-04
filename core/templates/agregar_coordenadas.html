@@ -1,65 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Coordenadas a Tarea</title>
+{% extends 'base.html' %}
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<h1>Agregar Coordenadas a Tarea</h1>
 
-    <!-- Incluye las bibliotecas de Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-</head>
-<body>
-    <h1>Agregar Coordenadas a Tarea</h1>
+<!-- Mapa interactivo -->
+<div id="map" style="height: 400px;"></div>
 
-    <!-- Mapa interactivo -->
-    <div id="map" style="height: 400px;"></div>
+<!-- Campos ocultos para almacenar las coordenadas -->
+<input type="hidden" id="latitud" name="latitud" />
+<input type="hidden" id="longitud" name="longitud" />
 
-    <!-- Campos ocultos para almacenar las coordenadas -->
-    <input type="hidden" id="latitud" name="latitud" />
-    <input type="hidden" id="longitud" name="longitud" />
+<form method="post" action="/agregar_coordenadas/1/">
+    {% csrf_token %}
 
-    <form method="post" action="/agregar_coordenadas/1/">
-        {% csrf_token %}
+    <label for="latitud">Latitud:</label>
+    <input type="text" id="latitudInput" name="latitud" readonly required><br>
 
-        <label for="latitud">Latitud:</label>
-        <input type="text" id="latitudInput" name="latitud" readonly required><br>
+    <label for="longitud">Longitud:</label>
+    <input type="text" id="longitudInput" name="longitud" readonly required><br>
 
-        <label for="longitud">Longitud:</label>
-        <input type="text" id="longitudInput" name="longitud" readonly required><br>
+    <button type="submit">Agregar Coordenadas</button>
+</form>
 
-        <button type="submit">Agregar Coordenadas</button>
-    </form>
+<script type="text/javascript">
+    var mymap = L.map('map');
 
-    <script type="text/javascript">
-        var mymap = L.map('map');
+    // Obtiene la ubicación del usuario
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
 
-        // Obtiene la ubicación del usuario
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var lat = position.coords.latitude;
-                var lon = position.coords.longitude;
+            mymap.setView([lat, lon], 13);
 
-                mymap.setView([lat, lon], 13);
+            // Agrega una capa de mapa
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(mymap);
 
-                // Agrega una capa de mapa
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                }).addTo(mymap);
+            // Crea un marcador que se puede mover en el mapa
+            var marker = L.marker([lat, lon], { draggable: true }).addTo(mymap);
 
-                // Crea un marcador que se puede mover en el mapa
-                var marker = L.marker([lat, lon], { draggable: true }).addTo(mymap);
-
-                // Actualiza los campos de latitud y longitud cuando se mueve el marcador
-                marker.on('dragend', function(event) {
-                    var latlng = marker.getLatLng();
-                    document.getElementById('latitud').value = latlng.lat;
-                    document.getElementById('longitud').value = latlng.lng;
-                    document.getElementById('latitudInput').value = latlng.lat;
-                    document.getElementById('longitudInput').value = latlng.lng;
-                });
+            // Actualiza los campos de latitud y longitud cuando se mueve el marcador
+            marker.on('dragend', function(event) {
+                var latlng = marker.getLatLng();
+                document.getElementById('latitud').value = latlng.lat;
+                document.getElementById('longitud').value = latlng.lng;
+                document.getElementById('latitudInput').value = latlng.lat;
+                document.getElementById('longitudInput').value = latlng.lng;
             });
-        }
-    </script>
-</body>
-</html>
+        });
+    }
+</script>
+{% endblock content %}
