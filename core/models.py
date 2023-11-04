@@ -10,6 +10,7 @@ class Drone(models.Model):
     carga_maxima = models.PositiveIntegerField()  # Carga máxima en gramos
     disponibilidad = models.BooleanField(default=True)
     precio_hora = models.DecimalField(max_digits=10, decimal_places=2)
+    fotografia=models.ImageField(upload_to='images/drones',null=True)
 
     def __str__(self):
         return self.nombre
@@ -18,11 +19,6 @@ class Servicio(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     costo = models.DecimalField(max_digits=10, decimal_places=2)
-    TIPO_TAREA_CHOICES = (
-        ('Agricultura', 'Agricultura'),
-        ('Ganadería', 'Ganadería'),
-        ('Seguridad', 'Seguridad'),
-    )
 
     def __str__(self):
         return self.nombre

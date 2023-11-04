@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="{% url 'index' %}">
+    <div class="mb-3">
+        <label class="form-label">Busca un dron:</label>
+        <input type="text" name="dron" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">
+        Buscar
+    </button>
+</form>
+
+{% if searchTerm %}
+<div class=" container alert alert-info">
+    Has buscado {{ searchTerm }}
+</div>
+{% endif %}
+
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for dron in drones %}
+    <div v-for="dron in drones" class="col">
+        <div class="card">
+            <img class="card-img-top" src="{{dron.fotografia.url }}" />
+            <div class="card-body">
+                <a href="{% url 'detalleDron' dron.id %}">
+                    <h5 class="card-title fw-bold">{{ dron.nombre}}</h5>
+                </a>
+
+                <p class="card-text">Descripcion{{ dron.descripcion}}</p>
+                <p class="card-text">Modelo{{ dron.modelo}}</p>
+                <p class="card-text">Horas autonomia{{ dron.autonomia}}</p>
+                <p class="card-text">Carga Maxima{{ dron.carga_maxima}}</p>
+                <p class="card-text">Disponible{{ dron.disponibilidad}}</p>
+                <p class="card-text">Precio por hora{{ dron.precio_hora}}</p>
+
+
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+{% endblock content %}

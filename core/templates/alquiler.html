@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Alquiler de Drones</h1>
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{{ dron.fotografia.url }}" class="img-fluid rounded-start" alt="">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">{{ dron.nombre }}</h5>
+                <p class="card-text">Descripcion :{{ dron.descripcion}}</p>
+                <p class="card-text">Modelo :{{ dron.modelo}}</p>
+                <p class="card-text">Horas autonomia :{{ dron.autonomia}}</p>
+                <p class="card-text">Carga Maxima :{{ dron.carga_maxima}}</p>
+                <p class="card-text">Disponible :{{ dron.disponibilidad}}</p>
+                <p class="card-text">Precio por hora: {{ dron.precio_hora}}</p>
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" action="{% url  'alquilarDron' dron.id  %}">
+    
+    {% csrf_token %}
+    
+    {{ alquiler_form.dron.as_hidden }}
+    {{ alquiler_form.cliente.as_hidden }}
+    <label for="{{ alquiler_form.servicio.id_for_label }}">Tipo de Servicio:</label>
+    {{ alquiler_form.servicio }}
+    <br>
+    <label for="{{ alquiler_form.fecha_inicio.id_for_label }}">Fecha de Inicio:</label>
+    {{ alquiler_form.fecha_inicio }}
+    <br>
+    <label for="{{ alquiler_form.fecha_fin.id_for_label }}">Fecha de Fin:</label>
+    {{ alquiler_form.fecha_fin }}
+    <br>
+
+    <input type="submit" value="Alquilar">
+    
+
+</form>
+
+
+{% endblock content %}
