@@ -12,6 +12,7 @@ urlpatterns = [
     path("detalleDron/<int:dron_id>", views.detalleDron, name="detalleDron"), 
     path('crear_alquiler/<int:dron_id>/', views.crear_alquiler, name='crear_alquiler'),
     path('pagina_exito/<int:alquiler_id>/', views.pagina_de_exito, name='pagina_de_exito'),
+    path('logs/', views.detalle_log, name="drone_logs"),
 path('mis_alquileres/', views.mis_alquileres, name='mis_alquileres'),
 
 path('agregar_tarea/<int:alquiler_id>/', views.agregar_tarea, name='agregar_tarea'),

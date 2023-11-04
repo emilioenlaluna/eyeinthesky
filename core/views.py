@@ -272,3 +272,28 @@ def detalle_tarea(request, tarea_id):
     coordenadas = CoordenadaGPS.objects.filter(tarea=tarea)
     
     return render(request, 'detalle_tarea.html', {'tarea': tarea, 'coordenadas': coordenadas})
+
+from core.models import Log
+
+from django.db.models import OuterRef, Subquery
+
+def detalle_log(request):
+
+  current_user = request.user
+
+  drones = Drone.objects.filter(id__in=Subquery(
+    Log.objects.filter(user=current_user).values('drone__id')
+  ))
+
+  context = {
+    'drones': []  
+  }
+
+  for drone in drones:
+    logs = Log.objects.filter(user=current_user,drone=drone).order_by('-timestep')
+    context['drones'].append({
+      'drone': drone,
+      'logs': logs
+    })
+
+  return render(request, 'detalle_log.html', context)

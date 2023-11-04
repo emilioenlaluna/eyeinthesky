@@ -12,13 +12,16 @@ object_detector = ultralytics.YOLO('core/models/best.pt')
 os.environ["REPLICATE_API_TOKEN"] = "r8_Vjc3lXrrj0wXA8KMEKb9L3UHYaHXXvB229IQ1"
 
 llm = Replicate(
-    model="a16z-infra/llama13b-v2-chat:df7690f1994d94e96ad9d568eac121aecf50684a0b0963b25a41cc40061269e5",
+    model="meta/llama-2-70b-chat:02e509c789964a7ea8736978a43525956ef40397be9033abf9fd2badfe68c9e3",
     model_kwargs={"temperature": 0.75, "max_length": 500, "top_p": 1},
 )
 
 prompt = PromptTemplate(input_variables=["coordinates"],
                         template=""" I would give you data from a object detection algorithm with object class and coordinates and you should,
-make a guess of what's happening on the image (Do not add anything else after that):
+make a detalied guess of what's happening on the image (Is an aerial image taken from a drone):
+
+Example:
+"The image show many cows over the field during the day, cars are traveling over a near highway"
 
 Data:
 {coordinates}
@@ -28,9 +31,26 @@ Image Description:
 
 """)
 
+
+
+class Drone(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField()
+    modelo = models.CharField(max_length=50)
+    autonomia = models.PositiveIntegerField()  # Autonomía de vuelo en minutos
+    velocidad_maxima = models.PositiveIntegerField()  # Velocidad máxima en km/h
+    carga_maxima = models.PositiveIntegerField()  # Carga máxima en gramos
+    disponibilidad = models.BooleanField(default=True)
+    precio_hora = models.DecimalField(max_digits=10, decimal_places=2)
+    fotografia=models.ImageField(upload_to='images/drones',null=True)
+
+    def __str__(self):
+        return self.nombre
+
 class Log(models.Model):
     
         drone = models.ForeignKey(Drone, on_delete=models.CASCADE)
+        user = models.ForeignKey(User, null=True,on_delete=models.CASCADE)
         timestep = models.DateTimeField(auto_now_add=True)
         fotografia = models.ImageField(upload_to="images/drones", null=True)
         fotografia_boxes = models.ImageField(upload_to="images/drones", default="images/drones/null.jpg")
@@ -57,12 +77,12 @@ class Log(models.Model):
                         cv2.putText(image,r.names[int(clf)] , (box[2] + 10, box[1] + 30), cv2.FONT_HERSHEY_COMPLEX,1,(0,0,255),2)
                         image_string += "Found " + r.names[int(clf)] + " at cordinates " + str(box)
 
-                cv2.imwrite(self.fotografia.path[:-3] + "boxes.jpg", image)
+                cv2.imwrite("images/drones/" +  str(self.timestep) + "boxes.jpg", image)
                 text = llm(prompt.format(coordinates=image_string))
                 print(text)
                 self.description = text
 
-                self.fotografia_boxes = str(self.fotografia.path[:-3]) + "boxes.jpg"
+                self.fotografia_boxes = "images/drones/" +  str(self.timestep) + "boxes.jpg"
 
             super(Log, self).save(*args, **kwargs)
 
@@ -74,20 +94,6 @@ class Log(models.Model):
     
         def get_absolute_url(self):
             return reverse("_detail", kwargs={"pk": self.pk})
-
-class Drone(models.Model):
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField()
-    modelo = models.CharField(max_length=50)
-    autonomia = models.PositiveIntegerField()  # Autonomía de vuelo en minutos
-    velocidad_maxima = models.PositiveIntegerField()  # Velocidad máxima en km/h
-    carga_maxima = models.PositiveIntegerField()  # Carga máxima en gramos
-    disponibilidad = models.BooleanField(default=True)
-    precio_hora = models.DecimalField(max_digits=10, decimal_places=2)
-    fotografia=models.ImageField(upload_to='images/drones',null=True)
-
-    def __str__(self):
-        return self.nombre
 
 class Servicio(models.Model):
     nombre = models.CharField(max_length=100)

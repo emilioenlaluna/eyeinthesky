@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for drone in drones %}
+
+<div class="card mb-3">
+
+   
+  
+    {% for log in drone.logs %}
+
+    <div class="card-body">
+        <h4 class="card-title">{{ drone.drone.nombre }}</h4>
+      </div>
+
+      <div class="card-body">
+        <h4 class="card-subtitle">{{ log.timestep }}</h4>
+      </div>
+  
+    <div class="card mb-3">
+      <div class="row no-gutters">
+  
+        <div class="col-md-6">
+          <img src="{{ log.fotografia.url }}" class="card-img">
+        </div>
+  
+        <div class="col-md-6">
+          <img src="{{ log.fotografia_boxes.url }}" class="card-img">
+        </div>
+  
+      </div>
+  
+      <div class="card-body">
+        <p class="card-text">{{ log.description }}</p>
+      </div>
+  
+    </div>
+  
+    {% endfor %}
+  
+  </div>
+{% endfor %}
+
+{% endblock content %}
