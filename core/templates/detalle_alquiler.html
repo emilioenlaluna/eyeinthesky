@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Detalles del Alquiler</h1>
+<h2>Información del Alquiler:</h2>
+<ul>
+    <li><strong>Cliente:</strong> {{ alquiler.cliente }}</li>
+    <li><strong>Dron:</strong> {{ alquiler.drone.nombre }}</li>
+    <li><strong>Fecha de Inicio:</strong> {{ alquiler.fecha_inicio }}</li>
+    <li><strong>Fecha de Fin:</strong> {{ alquiler.fecha_fin }}</li>
+    <li><strong>Servicio:</strong> {{ alquiler.servicio.nombre }}</li>
+    <li><strong>Costo Total:</strong> ${{ alquiler.costo_total }}</li>
+</ul>
+
+<h2>Tareas Asociadas:</h2>
+<ul>
+    {% for tarea in tareas %}
+        <li>
+            <strong>Nombre:</strong> {{ tarea.nombre }}<br>
+            <strong>Descripción:</strong> {{ tarea.descripcion }}<br>
+            <strong>Duración Estimada (minutos):</strong> {{ tarea.duracion_estimada }}<br>
+            <strong>Fecha de Inicio:</strong> {{ tarea.fecha_inicio }}<br>
+            <strong>Fecha de Fin:</strong> {{ tarea.fecha_fin }}<br>
+            <strong>Coordenadas:</strong>
+            <ul>
+                {% for coordenada in tarea.coordenadas.all %}
+                    <li>{{ coordenada }}</li>
+                    {% empty %}
+                    <p>No hay coordenadas.</p>
+                {% endfor %}
+                <a  class="btn btn-info" href="{% url 'detalle_tarea' tarea.id %}">
+                    Detalle de tarea
+                     </a>
+            </ul>
+        </li>
+        <hr>
+    {% empty %}
+        <p>No hay tareas asociadas a este alquiler.</p>
+    {% endfor %}
+    <a  class="btn btn-primary" href="{% url 'agregar_tarea' alquiler.id %}">
+        Agregar tarea
+         </a>
+</ul>
+{% endblock content %}

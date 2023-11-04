@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Mis Alquileres</h1>
+<ul>
+    {% for alquiler in alquileres %}
+        <li>
+            <strong>Drone:</strong> {{ alquiler.drone.nombre }}<br>
+            <strong>Servicio:</strong> {{ alquiler.servicio.nombre }}<br>
+            <strong>Fecha de inicio:</strong> {{ alquiler.fecha_inicio }}<br>
+            <strong>Fecha de fin:</strong> {{ alquiler.fecha_fin }}<br>
+            <strong>Costo Total:</strong> ${{ alquiler.costo_total }}<br>
+            <a  class="btn btn-primary" href="{% url 'detalle_alquiler' alquiler.id %}">
+                Ver Detalles: {{  alquiler.drone.nombre}}
+                 </a>
+        </li>
+        <hr>
+    {% empty %}
+        <p>No tienes alquileres aún.</p>
+    {% endfor %}
+</ul>
+{% endblock content %}

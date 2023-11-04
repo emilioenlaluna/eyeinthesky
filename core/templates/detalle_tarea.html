@@ -1,0 +1,47 @@
+
+{% extends 'base.html' %}
+{% block content %}
+ <!-- Incluye las bibliotecas de Leaflet -->
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<h1>Detalles de la Tarea</h1>
+
+<h2>Información de la Tarea:</h2>
+<ul>
+    <li><strong>Nombre:</strong> {{ tarea.nombre }}</li>
+    <li><strong>Descripción:</strong> {{ tarea.descripcion }}</li>
+    <li><strong>Duración Estimada (minutos):</strong> {{ tarea.duracion_estimada }}</li>
+    <li><strong>Fecha de Inicio:</strong> {{ tarea.fecha_inicio }}</li>
+    <li><strong>Fecha de Fin:</strong> {{ tarea.fecha_fin }}</li>
+</ul>
+
+<a  class="btn btn-info" href="{% url 'agregar_coordenadas' tarea.id %}">
+    Agregar coordenada
+     </a>
+<h2>Coordenadas Asociadas:</h2>
+<div id="map" style="height: 400px;"></div>
+
+<script type="text/javascript">
+    var map = L.map('map').setView([0, 0], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    // Obtiene la ubicación del usuario
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            map.setView([lat, lon], 13);
+        });
+    }
+
+    {% for coordenada in coordenadas %}
+        L.marker([{{ coordenada.latitud }}, {{ coordenada.longitud }}]).addTo(map)
+            .bindPopup("Latitud: {{ coordenada.latitud }}<br>Longitud: {{ coordenada.longitud }}");
+    {% endfor %}
+</script>
+
+{% endblock content %}

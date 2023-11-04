@@ -37,31 +37,26 @@ class Alquiler(models.Model):
 
 
 
-class CoordenadaGPS(models.Model):
-    latitud = models.FloatField()
-    longitud = models.FloatField()
 
-    def __str__(self):
-        return f"Latitud: {self.latitud}, Longitud: {self.longitud}"
 
 class Tarea(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
-    coordenadas = models.ManyToManyField(CoordenadaGPS)
     duracion_estimada = models.PositiveIntegerField()  # Duración estimada de la tarea en minutos
     costo = models.DecimalField(max_digits=10, decimal_places=2)
     fecha_inicio = models.DateTimeField()
     fecha_fin = models.DateTimeField()
     alquiler = models.ForeignKey(Alquiler, on_delete=models.CASCADE)
-    TIPO_TAREA_CHOICES = (
-        ('Agricultura', 'Agricultura'),
-        ('Ganadería', 'Ganadería'),
-        ('Seguridad', 'Seguridad'),
-    )
-
     def __str__(self):
         return self.nombre
 
+class CoordenadaGPS(models.Model):
+    latitud = models.FloatField()
+    longitud = models.FloatField()
+    tarea = models.ForeignKey(Tarea, on_delete=models.CASCADE,null=True)
+    def __str__(self):
+        return f"Latitud: {self.latitud}, Longitud: {self.longitud}"
+    
 class Monitoreo(models.Model):
     drone = models.ForeignKey(Drone, on_delete=models.CASCADE)
     tarea = models.ForeignKey(Tarea, on_delete=models.CASCADE)
@@ -80,3 +75,4 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"Comentario en {self.monitoreo}: {self.texto}"
+

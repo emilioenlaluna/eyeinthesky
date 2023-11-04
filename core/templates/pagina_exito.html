@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Alquiler Exitoso</h1>
+<p>Has creado un nuevo alquiler con los siguientes detalles:</p>
+<ul>
+    <li>Cliente: {{ alquiler.cliente }}</li>
+    <li>Dron: {{ alquiler.drone.nombre }}</li>
+    <li>Fecha de Inicio: {{ alquiler.fecha_inicio }}</li>
+    <li>Fecha de Fin: {{ alquiler.fecha_fin }}</li>
+    <li>Servicio: {{ alquiler.servicio.nombre }}</li>
+    <li>Costo Total: ${{ alquiler.costo_total }}</li>
+</ul>
+{% endblock content %}

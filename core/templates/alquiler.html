@@ -10,39 +10,36 @@
         <div class="col-md-8">
             <div class="card-body">
                 <h5 class="card-title">{{ dron.nombre }}</h5>
-                <p class="card-text">Descripcion :{{ dron.descripcion}}</p>
-                <p class="card-text">Modelo :{{ dron.modelo}}</p>
-                <p class="card-text">Horas autonomia :{{ dron.autonomia}}</p>
-                <p class="card-text">Carga Maxima :{{ dron.carga_maxima}}</p>
-                <p class="card-text">Disponible :{{ dron.disponibilidad}}</p>
-                <p class="card-text">Precio por hora: {{ dron.precio_hora}}</p>
-                
-                
+                <p class="card-text">Descripción: {{ dron.descripcion }}</p>
+                <p class="card-text">Modelo: {{ dron.modelo }}</p>
+                <p class="card-text">Horas de autonomía: {{ dron.autonomia }}</p>
+                <p class="card-text">Carga Máxima: {{ dron.carga_maxima }}</p>
+                <p class="card-text">Disponible: {{ dron.disponibilidad }}</p>
+                <p class="card-text">Precio por hora: {{ dron.precio_hora }}</p>
             </div>
         </div>
     </div>
 </div>
 
-<form method="post" action="{% url  'alquilarDron' dron.id  %}">
-    
+<h1>Crear Alquiler de Dron</h1>
+<form method="post">
     {% csrf_token %}
-    
-    {{ alquiler_form.dron.as_hidden }}
-    {{ alquiler_form.cliente.as_hidden }}
-    <label for="{{ alquiler_form.servicio.id_for_label }}">Tipo de Servicio:</label>
-    {{ alquiler_form.servicio }}
-    <br>
-    <label for="{{ alquiler_form.fecha_inicio.id_for_label }}">Fecha de Inicio:</label>
-    {{ alquiler_form.fecha_inicio }}
-    <br>
-    <label for="{{ alquiler_form.fecha_fin.id_for_label }}">Fecha de Fin:</label>
-    {{ alquiler_form.fecha_fin }}
-    <br>
 
-    <input type="submit" value="Alquilar">
-    
+    <p><strong>Dron: {{ dron.nombre }}</strong></p>
 
+    <label for="fecha_inicio">Fecha de inicio:</label>
+    <input type="date" name="fecha_inicio" required><br>
+
+    <label for="fecha_fin">Fecha de fin:</label>
+    <input type="date" name="fecha_fin" required><br>
+
+    <label for="servicio">Selecciona un servicio:</label>
+    <select name="servicio" id="servicio">
+        {% for servicio in servicios %}
+            <option value="{{ servicio.id }}">{{ servicio.nombre }} ({{ servicio.costo }})</option>
+        {% endfor %}
+    </select><br>
+
+    <input type="submit" value="Crear Alquiler">
 </form>
-
-
 {% endblock content %}
