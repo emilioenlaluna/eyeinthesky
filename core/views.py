@@ -67,3 +67,11 @@ def verpedidos(request):
         app_label='restaurante', model_name='Pedido')
     pedidos = Pedido.objects.filter(usuario=request.user)
     return render(request, 'vermispedidos.html', { 'pedidos': pedidos})
+
+
+def home(request):
+    return render(request, 'index.html')
+
+
+def about(request):
+    return render(request, 'about.html')
