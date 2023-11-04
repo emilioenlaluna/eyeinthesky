@@ -9,6 +9,7 @@ admin.site.register(CoordenadaGPS)
 admin.site.register(Tarea)
 admin.site.register(Monitoreo)
 admin.site.register(Comentario)
+admin.site.register(Log)
 
 admin.site.site_header = "Eye in the sky"
 admin.site.site_title = "Eye in the sky / Emprende Uaa 2023"
